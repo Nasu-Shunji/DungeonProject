@@ -1,10 +1,15 @@
+using TMPro;
 using UnityEngine;
 
 public class DoorInteraction : MonoBehaviour
 {
+    [Header("Door")]
     [SerializeField] private Transform doorPivot;
     [SerializeField] private float openAngle = -90f;
     [SerializeField] private float rotationSpeed = 180f;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text interactionPrompt;
 
     private bool isPlayerNearby;
     private bool isOpen;
@@ -16,31 +21,38 @@ public class DoorInteraction : MonoBehaviour
     {
         if (doorPivot == null)
         {
-            Debug.LogError("Door Pivotが設定されていません。", this);
+            Debug.LogError(
+                "Door Pivotが設定されていません。",
+                this
+            );
+
             enabled = false;
             return;
         }
 
-        // ゲーム開始時の向きを「閉じた状態」として保存
         closedRotation = doorPivot.localRotation;
 
-        // 閉じた状態からY軸方向へ90度回した向き
         openRotation =
             closedRotation * Quaternion.Euler(0f, openAngle, 0f);
+
+        // ゲーム開始時は操作案内を非表示にする
+        if (interactionPrompt != null)
+        {
+            interactionPrompt.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
     {
-        // Playerが近くにいて、Eキーを押した瞬間
         if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
             isOpen = !isOpen;
+            UpdatePromptText();
         }
 
         Quaternion targetRotation =
             isOpen ? openRotation : closedRotation;
 
-        // 目標角度まで徐々に回転
         doorPivot.localRotation = Quaternion.RotateTowards(
             doorPivot.localRotation,
             targetRotation,
@@ -50,18 +62,44 @@ public class DoorInteraction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
         {
-            isPlayerNearby = true;
-            Debug.Log("扉を操作できます：Eキー");
+            return;
+        }
+
+        isPlayerNearby = true;
+
+        if (interactionPrompt != null)
+        {
+            UpdatePromptText();
+            interactionPrompt.gameObject.SetActive(true);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!other.CompareTag("Player"))
         {
-            isPlayerNearby = false;
+            return;
         }
+
+        isPlayerNearby = false;
+
+        if (interactionPrompt != null)
+        {
+            interactionPrompt.gameObject.SetActive(false);
+        }
+    }
+
+    private void UpdatePromptText()
+    {
+        if (interactionPrompt == null)
+        {
+            return;
+        }
+
+        interactionPrompt.text = isOpen
+            ? "Press E to close"
+            : "Press E to open";
     }
 }
