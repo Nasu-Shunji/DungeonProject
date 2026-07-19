@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class ChestInteraction : MonoBehaviour
 {
     [Header("Chest")]
@@ -22,8 +23,17 @@ public class ChestInteraction : MonoBehaviour
     private Quaternion closedRotation;
     private Quaternion openRotation;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip chestOpenSound;
+    [SerializeField] private AudioClip itemPickupSound;
+
+    //AudioSourceはその音声を実際に再生する装置
+    private AudioSource audioSource;
+
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         if (lidPivot == null)
         {
             Debug.LogError(
@@ -60,6 +70,11 @@ public class ChestInteraction : MonoBehaviour
             {
                 // 1回目のEキー：宝箱を開く
                 isOpen = true;
+
+                 if (chestOpenSound != null)
+                {
+                    audioSource.PlayOneShot(chestOpenSound);
+                }
             }
             else if (hasReward && nearbyInventory != null)
             {
@@ -67,6 +82,12 @@ public class ChestInteraction : MonoBehaviour
                 hasReward = false;
 
                 nearbyInventory.AddItem(rewardAmount);
+
+                 if (itemPickupSound != null)
+                {
+                    audioSource.PlayOneShot(itemPickupSound);
+                }
+
 
                 if (rewardItem != null)
                 {

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class DoorInteraction : MonoBehaviour
 {
     [Header("Door")]
@@ -17,8 +18,16 @@ public class DoorInteraction : MonoBehaviour
     private Quaternion closedRotation;
     private Quaternion openRotation;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip doorSound;
+
+    //AudioSourceはその音声を実際に再生する装置
+    private AudioSource audioSource;
+
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
         if (doorPivot == null)
         {
             Debug.LogError(
@@ -47,6 +56,12 @@ public class DoorInteraction : MonoBehaviour
         if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
         {
             isOpen = !isOpen;
+
+            if (doorSound != null)
+        {
+            audioSource.PlayOneShot(doorSound);
+        }
+
             UpdatePromptText();
         }
 

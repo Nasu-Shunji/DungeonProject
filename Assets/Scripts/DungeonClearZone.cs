@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(AudioSource))]
 public class DungeonClearZone : MonoBehaviour
 {
     [Header("Clear Condition")]
@@ -12,9 +13,17 @@ public class DungeonClearZone : MonoBehaviour
     [SerializeField] private TMP_Text clearMessage;
     private bool isCleared;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip clearSound;
+
+    //AudioSourceはその音声を実際に再生する装置
+    private AudioSource audioSource;
+
     private void Awake()
     {
-       if (clearPanel != null)
+        audioSource = GetComponent<AudioSource>();
+        
+        if (clearPanel != null)
         {
             clearPanel.SetActive(false);
         }
@@ -60,6 +69,11 @@ public class DungeonClearZone : MonoBehaviour
     private void ClearDungeon(Collider playerCollider)
     {
         isCleared = true;
+
+        if (clearSound != null)
+        {
+            audioSource.PlayOneShot(clearSound);
+        }
 
         if (clearMessage != null)
         {
