@@ -5,6 +5,11 @@ public class PlayerMovement : MonoBehaviour
      [SerializeField] private float moveSpeed = 5f;
      [SerializeField] private float gravity = -9.81f;
      [SerializeField] private float rotationSpeed = 10f;
+
+     [Header("Respawn")]
+     [SerializeField] private Transform respawnPoint;
+     [SerializeField] private float fallLimitY = -5f;
+
      [SerializeField] private Transform cameraTransform;
 
     private CharacterController controller;
@@ -17,6 +22,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (transform.position.y < fallLimitY)
+        {
+            Respawn();
+            return;
+        }
+
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
@@ -54,5 +65,27 @@ public class PlayerMovement : MonoBehaviour
         movement.y = verticalVelocity;
 
         controller.Move(movement * Time.deltaTime);
+    }
+
+    private void Respawn()
+    {
+        if (respawnPoint == null)
+        {
+            Debug.LogError(
+                "Respawn Pointが設定されていません。",
+                this
+            );
+
+            return;
+        }
+
+        controller.enabled = false;
+
+        transform.position = respawnPoint.position;
+        transform.rotation = respawnPoint.rotation;
+
+        verticalVelocity = 0f;
+
+        controller.enabled = true;
     }
 }
