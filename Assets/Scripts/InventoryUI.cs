@@ -27,6 +27,7 @@ public class InventoryUI : MonoBehaviour
         }
 
         // 所持数の変更通知を受け取る
+        // PlayerInventoryのアイテム数が変わったら、InventoryUIのUpdateItemCountを呼んでください
         inventory.ItemCountChanged += UpdateItemCount;
 
         // ゲーム開始時の値を表示

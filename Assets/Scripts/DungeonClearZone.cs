@@ -19,6 +19,9 @@ public class DungeonClearZone : MonoBehaviour
     //AudioSourceはその音声を実際に再生する装置
     private AudioSource audioSource;
 
+    [Header("Menu")]
+    [SerializeField] private PauseMenu pauseMenu;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -85,6 +88,14 @@ public class DungeonClearZone : MonoBehaviour
             clearPanel.SetActive(true);
         }
 
+        if (pauseMenu != null)
+        {
+            pauseMenu.EnterUiMode();
+
+            // クリア画面中にEscでポーズ画面が開くのを防ぐ
+            pauseMenu.enabled = false;
+        }
+
         PlayerMovement playerMovement =
             playerCollider.GetComponentInParent<PlayerMovement>();
 
@@ -98,6 +109,18 @@ public class DungeonClearZone : MonoBehaviour
 
     public void RetryDungeon()
     {
+        if (pauseMenu != null)
+        {
+            pauseMenu.ExitUiMode();
+        }
+        else
+        {
+            Time.timeScale = 1f;
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().name
         );

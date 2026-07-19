@@ -1591,6 +1591,7 @@ MonoBehaviour:
   clearPanel: {fileID: 746742335}
   clearMessage: {fileID: 2074192976}
   clearSound: {fileID: 8300000, guid: 6818b518200490046af3731d63dec9ef, type: 3}
+  pauseMenu: {fileID: 1233342064}
 --- !u!65 &799106400
 BoxCollider:
   m_ObjectHideFlags: 0

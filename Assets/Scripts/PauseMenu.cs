@@ -48,9 +48,7 @@ public class PauseMenu : MonoBehaviour
             pausePanel.SetActive(true);
         }
 
-        Time.timeScale = 0f;
-
-        UnlockCursor();
+        EnterUiMode();
     }
 
     public void ResumeGame()
@@ -61,10 +59,8 @@ public class PauseMenu : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
-
-        Time.timeScale = 1f;
-
-        LockCursor();
+        
+        ExitUiMode();
     }
 
     public void ReturnToTitle()
@@ -102,5 +98,19 @@ public class PauseMenu : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    public void EnterUiMode()
+    {
+        Time.timeScale = 0f;
+
+        UnlockCursor();
+    }
+
+public void ExitUiMode()
+    {
+        Time.timeScale = 1f;
+
+        LockCursor();
     }
 }
