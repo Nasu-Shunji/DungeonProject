@@ -8,21 +8,15 @@ public class DungeonClearZone : MonoBehaviour
     [SerializeField] private int requiredItemCount = 1;
 
     [Header("UI")]
+    [SerializeField] private GameObject clearPanel;
     [SerializeField] private TMP_Text clearMessage;
-    [SerializeField] private GameObject retryButton;
-
     private bool isCleared;
 
     private void Awake()
     {
-        if (clearMessage != null)
+       if (clearPanel != null)
         {
-            clearMessage.gameObject.SetActive(false);
-        }
-
-        if (retryButton != null)
-        {
-            retryButton.SetActive(false);
+            clearPanel.SetActive(false);
         }
     }
 
@@ -70,12 +64,11 @@ public class DungeonClearZone : MonoBehaviour
         if (clearMessage != null)
         {
             clearMessage.text = "Dungeon Clear!";
-            clearMessage.gameObject.SetActive(true);
         }
 
-        if (retryButton != null)
+        if (clearPanel != null)
         {
-            retryButton.SetActive(true);
+            clearPanel.SetActive(true);
         }
 
         PlayerMovement playerMovement =
