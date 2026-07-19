@@ -20,6 +20,8 @@ public class PauseMenu : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
+
+        LockCursor();
     }
 
     private void Update()
@@ -47,6 +49,8 @@ public class PauseMenu : MonoBehaviour
         }
 
         Time.timeScale = 0f;
+
+        UnlockCursor();
     }
 
     public void ResumeGame()
@@ -59,11 +63,15 @@ public class PauseMenu : MonoBehaviour
         }
 
         Time.timeScale = 1f;
+
+        LockCursor();
     }
 
     public void ReturnToTitle()
     {
         Time.timeScale = 1f;
+
+        UnlockCursor();
 
         SceneManager.LoadScene(titleSceneName);
     }
@@ -82,5 +90,17 @@ public class PauseMenu : MonoBehaviour
     private void OnDestroy()
     {
         Time.timeScale = 1f;
+    }
+
+    private void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void UnlockCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
