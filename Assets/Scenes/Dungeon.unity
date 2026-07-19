@@ -664,7 +664,7 @@ GameObject:
   - component: {fileID: 354125211}
   - component: {fileID: 354125216}
   - component: {fileID: 354125217}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -2991,7 +2991,7 @@ GameObject:
   - component: {fileID: 1338139685}
   - component: {fileID: 1338139684}
   - component: {fileID: 1338139683}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4752,6 +4752,15 @@ MonoBehaviour:
   target: {fileID: 354125215}
   offset: {x: 8, y: 6, z: 0}
   followSpeed: 5
+  mouseSensitivity: 3
+  minPitch: -20
+  maxPitch: 70
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  cameraRadius: 0.3
+  wallPadding: 0.15
+  minDistance: 1.5
 --- !u!1 &1933644927
 GameObject:
   m_ObjectHideFlags: 0
