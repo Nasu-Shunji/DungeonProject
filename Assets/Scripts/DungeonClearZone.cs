@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DungeonClearZone : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class DungeonClearZone : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TMP_Text clearMessage;
+    [SerializeField] private GameObject retryButton;
 
     private bool isCleared;
 
@@ -16,6 +18,11 @@ public class DungeonClearZone : MonoBehaviour
         if (clearMessage != null)
         {
             clearMessage.gameObject.SetActive(false);
+        }
+
+        if (retryButton != null)
+        {
+            retryButton.SetActive(false);
         }
     }
 
@@ -66,6 +73,11 @@ public class DungeonClearZone : MonoBehaviour
             clearMessage.gameObject.SetActive(true);
         }
 
+        if (retryButton != null)
+        {
+            retryButton.SetActive(true);
+        }
+
         PlayerMovement playerMovement =
             playerCollider.GetComponentInParent<PlayerMovement>();
 
@@ -75,5 +87,12 @@ public class DungeonClearZone : MonoBehaviour
         }
 
         Debug.Log("Dungeon cleared!");
+    }
+
+    public void RetryDungeon()
+    {
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().name
+        );
     }
 }
