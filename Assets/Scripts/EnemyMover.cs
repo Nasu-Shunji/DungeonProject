@@ -7,8 +7,9 @@ public class EnemyMover : MonoBehaviour
     //敵の現在の行動状態
     private enum EnemyState
     {
-        Patrol, //巡回
-        Chase   //Playerを追跡
+    Patrol, //巡回
+    Chase,  //Playerを追跡
+    Attack  //その場でPlayerを攻撃
     }
 
     [Header("Patrol")]
@@ -51,10 +52,16 @@ public class EnemyMover : MonoBehaviour
     //Playerを見失ってからの経過時間
     private float loseSightTimer;
 
+    //同じEnemyに付いている攻撃処理
+    private EnemyAttack enemyAttack;
+
     private void Awake()
     {
         //このEnemyに付いているNavMeshAgentを取得
         agent = GetComponent<NavMeshAgent>();
+
+        //このEnemyに付いているEnemyAttackを取得
+        enemyAttack = GetComponent<EnemyAttack>();
     }
 
     private void Start()
@@ -122,6 +129,12 @@ public class EnemyMover : MonoBehaviour
         {
             UpdateChase(distanceToPlayer);
         }
+
+        //現在が攻撃状態の場合
+        else if (currentState == EnemyState.Attack)
+        {
+            UpdateAttack(distanceToPlayer);
+        }
     }
 
     private void UpdatePatrol()
@@ -177,8 +190,53 @@ public class EnemyMover : MonoBehaviour
             return;
         }
 
+        //Playerが攻撃距離内に入ったら攻撃状態へ切り替える
+    if (distanceToPlayer <= enemyAttack.AttackDistance
+        && CanSeePlayer())
+        {
+            StartAttack();
+            return;
+        }
+
         //Playerの現在位置を目的地として追跡
         agent.SetDestination(player.position);
+    }
+
+    private void UpdateAttack(float distanceToPlayer)
+    {
+        //Playerが攻撃距離の外へ出たら、
+        //攻撃をやめて再び追跡する
+        if (distanceToPlayer > enemyAttack.AttackDistance)
+        {
+            StartChase();
+            return;
+        }
+
+        //EnemyからPlayerへ向かう方向を取得
+        Vector3 directionToPlayer =
+            player.position - transform.position;
+
+        //上下方向の傾きをなくし、
+        //Enemyが横方向だけを向くようにする
+        directionToPlayer.y = 0f;
+
+        //Player方向が存在する場合
+        if (directionToPlayer.sqrMagnitude > 0.001f)
+        {
+            //Playerの方向を向くための回転を作る
+            Quaternion targetRotation =
+                Quaternion.LookRotation(directionToPlayer);
+
+            //Enemyを少しずつPlayer方向へ回転させる
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                agent.angularSpeed * Time.deltaTime
+            );
+        }
+
+        //攻撃可能なタイミングならPlayerへダメージを与える
+        enemyAttack.TryAttack();
     }
 
     private bool CanSeePlayer()
@@ -235,6 +293,9 @@ public class EnemyMover : MonoBehaviour
         //敵の状態を追跡へ変更
         currentState = EnemyState.Chase;
 
+        //NavMeshAgentの移動を再開
+        agent.isStopped = false;
+
         //見失った時間をリセット
         loseSightTimer = 0f;
 
@@ -244,15 +305,29 @@ public class EnemyMover : MonoBehaviour
         Debug.Log("Enemy started chasing.");
     }
 
+     private void StartAttack()
+    {
+        //敵の状態を攻撃へ変更
+        currentState = EnemyState.Attack;
+
+        //攻撃中はNavMeshAgentの移動を停止
+        agent.isStopped = true;
+
+        Debug.Log("Enemy started attacking.");
+    }
+
     private void StartPatrol()
     {
         //敵の状態を巡回へ変更
         currentState = EnemyState.Patrol;
 
+        //NavMeshAgentの移動を再開
+        agent.isStopped = false;
+
         //見失った時間をリセット
         loseSightTimer = 0f;
 
-        //現在選択されている巡回地点へ戻る
+        //現在選択されている巡回地点へ移動
         MoveToCurrentPoint();
 
         Debug.Log("Enemy returned to patrol.");
