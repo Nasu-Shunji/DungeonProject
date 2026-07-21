@@ -216,8 +216,7 @@ public class EnemyMover : MonoBehaviour
         Vector3 directionToPlayer =
             player.position - transform.position;
 
-        //上下方向の傾きをなくし、
-        //Enemyが横方向だけを向くようにする
+        //上下方向の傾きをなくし、Enemyが横方向だけを向くようにする(Yの値が違えば上下のベクトルも加わるため)
         directionToPlayer.y = 0f;
 
         //Player方向が存在する場合
@@ -227,7 +226,7 @@ public class EnemyMover : MonoBehaviour
             Quaternion targetRotation =
                 Quaternion.LookRotation(directionToPlayer);
 
-            //Enemyを少しずつPlayer方向へ回転させる
+            //Enemyを少しずつPlayer方向へ回転させる、在の回転から目標の回転へ、指定した角度分だけ近づける
             transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
                 targetRotation,

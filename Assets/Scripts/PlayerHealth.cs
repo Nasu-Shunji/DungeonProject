@@ -19,6 +19,9 @@ public class PlayerHealth : MonoBehaviour
     //現在HPと最大HPが変化したことをUIへ通知するイベント
     public event Action<int, int> HealthChanged;
 
+    //Playerがダメージを受けたことを外部へ通知するイベント(引数を渡さないためActionの<>は不要)
+    public event Action Damaged;
+
     //外部から現在HPを確認するためのプロパティ
     public int CurrentHealth => currentHealth;
 
@@ -50,6 +53,9 @@ public class PlayerHealth : MonoBehaviour
             currentHealth,
             maxHealth
         );
+
+        //Playerがダメージを受けたことを演出用スクリプトへ通知
+        Damaged?.Invoke();
 
         Debug.Log(
             $"Player took {damage} damage. HP: {currentHealth}"
