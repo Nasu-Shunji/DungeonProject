@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -21,6 +19,9 @@ public class PlayerHealth : MonoBehaviour
 
     //Playerがダメージを受けたことを外部へ通知するイベント(引数を渡さないためActionの<>は不要)
     public event Action Damaged;
+
+    //Playerが死亡したことを外部へ通知するイベント
+    public event Action Died;
 
     //外部から現在HPを確認するためのプロパティ
     public int CurrentHealth => currentHealth;
@@ -70,32 +71,28 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        //死亡状態にする
+        //死亡処理を何度も実行しないようにする
+        if (isDead)
+        {
+            return;
+        }
+
+        //Playerを死亡状態にする
         isDead = true;
 
-        //Playerの移動を停止する
+        //Playerの移動処理を取得
         PlayerMovement playerMovement =
             GetComponent<PlayerMovement>();
 
+        //PlayerMovementが存在する場合は操作を停止
         if (playerMovement != null)
         {
             playerMovement.enabled = false;
         }
 
+        //Playerが死亡したことをゲームオーバーUIへ通知
+        Died?.Invoke();
+
         Debug.Log("Player died.");
-
-        //少し待ってからDungeonを再読み込み
-        StartCoroutine(ReloadSceneAfterDelay());
-    }
-
-    private IEnumerator ReloadSceneAfterDelay()
-    {
-        //1秒待つ
-        yield return new WaitForSeconds(1f);
-
-        //現在開いているSceneを最初から読み込む
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().name
-        );
     }
 }
