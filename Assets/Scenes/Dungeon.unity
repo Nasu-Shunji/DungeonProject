@@ -954,6 +954,7 @@ GameObject:
   - component: {fileID: 354125217}
   - component: {fileID: 354125218}
   - component: {fileID: 354125219}
+  - component: {fileID: 354125220}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1080,6 +1081,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1338139682}
+  - {fileID: 2023954748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!114 &354125216
@@ -1144,6 +1146,25 @@ MonoBehaviour:
   - {fileID: 1338139684}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.15
+--- !u!114 &354125220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354125210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcbf3e542bc0fda44b09d5437befdbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  attackPoint: {fileID: 2023954748}
+  attackRange: 1
+  attackDamage: 20
+  attackInterval: 0.5
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &374720995
 GameObject:
   m_ObjectHideFlags: 0
@@ -2790,7 +2811,8 @@ GameObject:
   - component: {fileID: 1036716223}
   - component: {fileID: 1036716222}
   - component: {fileID: 1036716224}
-  m_Layer: 0
+  - component: {fileID: 1036716225}
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2955,6 +2977,19 @@ MonoBehaviour:
   attackDistance: 1.5
   attackDamage: 20
   attackInterval: 1
+--- !u!114 &1036716225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036716217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3c6ec3cbae0a44abc79294e7d7f067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  maxHealth: 60
 --- !u!1 &1066414265
 GameObject:
   m_ObjectHideFlags: 0
@@ -3408,7 +3443,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1222488318
 MonoBehaviour:
@@ -6243,6 +6278,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997612085}
   m_CullTransparentMesh: 1
+--- !u!1 &2023954747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2023954748}
+  m_Layer: 3
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2023954748
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023954747}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 354125215}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2029871011
 GameObject:
   m_ObjectHideFlags: 0
