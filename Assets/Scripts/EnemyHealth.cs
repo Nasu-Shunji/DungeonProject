@@ -13,6 +13,15 @@ public class EnemyHealth : MonoBehaviour
     //死亡処理を何度も実行しないためのフラグ
     private bool isDead;
 
+    [Header("Drop")]
+
+    //Enemyが死亡したときに生成するアイテム
+    [SerializeField] private GameObject dropPrefab;
+
+    //Enemyの位置からどれだけずらして生成するか
+    [SerializeField] private Vector3 dropOffset =
+        new Vector3(0f, 0.5f, 0f);
+
     private void Awake()
     {
         //ゲーム開始時は最大HPにする
@@ -50,6 +59,18 @@ public class EnemyHealth : MonoBehaviour
         isDead = true;
 
         Debug.Log("Enemy died.");
+
+        //ドロップするPrefabが設定されている場合
+    if (dropPrefab != null)
+    {
+        //Enemyの位置に回復アイテムを生成、Prefabをゲーム中に生成する処理
+        //何を生成するか, どこへ生成するか, 回転していない状態で生成
+        Instantiate(
+            dropPrefab,
+            transform.position + dropOffset,
+            Quaternion.identity
+        );
+    }
 
         //EnemyのGameObjectを削除
         Destroy(gameObject);

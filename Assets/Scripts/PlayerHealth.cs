@@ -69,6 +69,36 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public bool Heal(int healAmount)
+    {
+        //回復量が0以下、死亡済み、またはHPが満タンなら回復しない
+        if (healAmount <= 0
+            || isDead
+            || currentHealth >= maxHealth)
+        {
+            return false;
+        }
+
+        //現在HPに回復量を足し、最大HPを超えないようにする
+        currentHealth = Mathf.Min(
+            currentHealth + healAmount,
+            maxHealth
+        );
+
+        //HPが変化したことをUIへ通知
+        HealthChanged?.Invoke(
+            currentHealth,
+            maxHealth
+        );
+
+        Debug.Log(
+            $"Player healed {healAmount}. HP: {currentHealth}"
+        );
+
+        //正常に回復できたことを呼び出し元へ返す
+        return true;
+    }
+
     private void Die()
     {
         //死亡処理を何度も実行しないようにする
