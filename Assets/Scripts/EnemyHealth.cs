@@ -23,6 +23,18 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private Vector3 dropOffset =
         new Vector3(0f, 0.5f, 0f);
 
+    //Enemyがダメージを受けたことを外部へ通知するイベント
+    public event Action Damaged;
+
+    //Enemyの現在HPと最大HPが変化したことをUIへ通知するイベント
+    public event Action<int, int> HealthChanged;
+
+    //外部から現在HPを確認するためのプロパティ
+    public int CurrentHealth => currentHealth;
+
+    //外部から最大HPを確認するためのプロパティ
+    public int MaxHealth => maxHealth;
+
     //Enemyが死亡したことを外部へ通知するイベント
     public event Action Died;
 
@@ -45,6 +57,15 @@ public class EnemyHealth : MonoBehaviour
             currentHealth - damage,
             0
         );
+
+        //HPが変化したことをHPバーへ通知
+        HealthChanged?.Invoke(
+            currentHealth,
+            maxHealth
+        );
+
+        //Enemyがダメージを受けたことを演出用スクリプトへ通知
+        Damaged?.Invoke();
 
         Debug.Log(
             $"Enemy took {damage} damage. HP: {currentHealth}"

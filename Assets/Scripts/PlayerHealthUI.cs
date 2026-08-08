@@ -31,8 +31,11 @@ public class PlayerHealthUI : MonoBehaviour
 
         //HPが変化したとき、UpdateHealthTextを実行する、実行するメソッドとして登録
         playerHealth.HealthChanged += UpdateHealthText;
+    }
 
-        //ゲーム開始時のHPも表示する
+    private void Start()
+    {
+        //AwakeによるPlayerHealthの初期化が終わったあとで、ゲーム開始時のHPを画面へ表示
         UpdateHealthText(
             playerHealth.CurrentHealth,
             playerHealth.MaxHealth
