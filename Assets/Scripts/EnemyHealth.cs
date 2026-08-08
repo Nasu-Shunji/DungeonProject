@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class EnemyHealth : MonoBehaviour
     //Enemyの位置からどれだけずらして生成するか
     [SerializeField] private Vector3 dropOffset =
         new Vector3(0f, 0.5f, 0f);
+
+    //Enemyが死亡したことを外部へ通知するイベント
+    public event Action Died;
 
     private void Awake()
     {
@@ -59,6 +63,9 @@ public class EnemyHealth : MonoBehaviour
         isDead = true;
 
         Debug.Log("Enemy died.");
+
+        //Enemyが死亡したことを外部へ通知
+        Died?.Invoke();
 
         //ドロップするPrefabが設定されている場合
     if (dropPrefab != null)

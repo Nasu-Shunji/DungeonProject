@@ -24,6 +24,9 @@ public class DoorInteraction : MonoBehaviour
     //AudioSourceはその音声を実際に再生する装置
     private AudioSource audioSource;
 
+    ////ゲーム開始時は扉を開けられる状態、Enemyを全滅させるまでは扉を操作できないようにする変数
+    [SerializeField] private bool isLocked = false;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -53,9 +56,13 @@ public class DoorInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
-        {
-            isOpen = !isOpen;
+       //ロック解除済みで、Playerが近くにいて、Eキーを押したときだけ扉を開閉
+    if (!isLocked
+        && isPlayerNearby
+        && Input.GetKeyDown(KeyCode.E))
+    {
+        //開いていれば閉じる、閉じていれば開く
+        isOpen = !isOpen;
 
             if (doorSound != null)
         {
@@ -113,8 +120,43 @@ public class DoorInteraction : MonoBehaviour
             return;
         }
 
+        //扉がロックされている場合
+        if (isLocked)
+        {
+            interactionPrompt.text = "Locked";
+            return;
+        }
+
         interactionPrompt.text = isOpen
             ? "Press E to close"
             : "Press E to open";
+    }
+
+    public void UnlockAndOpen()
+    {
+        //扉のロックを解除
+        isLocked = false;
+
+        //扉を開いた状態へ変更
+        isOpen = true;
+
+        //扉が開いたので操作案内を更新
+         UpdatePromptText();
+
+        Debug.Log("Door unlocked.");
+    }
+
+    public void LockAndClose()
+    {
+        //扉を閉じた状態にする
+        isOpen = false;
+
+        //扉をロックする
+        isLocked = true;
+
+        //現在の状態に合わせて操作案内を更新
+        UpdatePromptText();
+
+        Debug.Log("Door locked.");
     }
 }
