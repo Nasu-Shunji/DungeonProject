@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(AudioSource))]
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack")]
@@ -26,6 +27,9 @@ public class PlayerAttack : MonoBehaviour
     //剣を振るときの回転中心
     [SerializeField] private Transform weaponPivot;
 
+    //剣を振ったときに表示する軌跡
+    [SerializeField] private TrailRenderer swordTrail;
+
     //1回の攻撃で剣を振る角度
     [SerializeField] private float swingAngle = 120f;
 
@@ -37,6 +41,30 @@ public class PlayerAttack : MonoBehaviour
 
     //現在攻撃中かどうか
     private bool isAttacking;
+
+    [Header("Attack Audio")]
+    //剣を振ったときに再生するSE
+    [SerializeField] private AudioClip swingSound;
+
+    //Swing SEの音量
+    [SerializeField, Range(0f, 1f)]
+    private float swingVolume = 0.35f;
+
+    //Enemyに攻撃が当たったときのSE
+    [SerializeField] private AudioClip hitSound;
+
+    //攻撃SEを再生するAudioSource
+    private AudioSource audioSource;
+
+    [Header("Attack Effect")]
+    //Enemyに攻撃が当たった場所に表示するエフェクト
+    [SerializeField] private GameObject hitEffectPrefab;
+
+    private void Awake()
+    {
+        //Playerに付いているAudioSourceを取得
+        audioSource = GetComponent<AudioSource>();
+    }
 
     private void Update()
     {
@@ -76,6 +104,12 @@ public class PlayerAttack : MonoBehaviour
         //次に攻撃できるまでの待ち時間を設定
         attackTimer = attackInterval;
 
+        //剣を振るSEが設定されていれば1回だけ再生
+        if (swingSound != null)
+        {
+            audioSource.PlayOneShot(swingSound,swingVolume);
+        }
+
         //WeaponPivotが設定されていない場合は、演出なしで攻撃判定だけ行う
         if (weaponPivot == null)
         {
@@ -84,6 +118,16 @@ public class PlayerAttack : MonoBehaviour
             isAttacking = false;
             yield break;
         }
+
+        //前回の攻撃で残っている軌跡を消す
+        if (swordTrail != null)
+        {
+            swordTrail.Clear();
+
+            //攻撃を振り始めるので軌跡を表示
+            swordTrail.emitting = true;
+        }
+
 
         //攻撃開始前の回転を保存
         Quaternion startRotation =
@@ -135,6 +179,12 @@ public class PlayerAttack : MonoBehaviour
         //剣を振り切ったタイミングで攻撃判定
         PerformHit();
 
+        //攻撃を振り切ったので、新しい軌跡の生成を止める
+        if (swordTrail != null)
+        {
+            swordTrail.emitting = false;
+        }
+
         elapsedTime = 0f;
 
         //振り切った位置から、元の位置へ少しずつ戻す
@@ -176,6 +226,9 @@ public class PlayerAttack : MonoBehaviour
                 QueryTriggerInteraction.Ignore
             );
 
+        //今回の攻撃がEnemyに当たったか
+        bool hitAnyEnemy = false;
+
         //攻撃範囲内にいるEnemyを順番に確認
         foreach (Collider hitEnemy in hitEnemies)
         {
@@ -189,7 +242,40 @@ public class PlayerAttack : MonoBehaviour
                 enemyHealth.TakeDamage(
                     attackDamage
                 );
+
+                //Enemyに攻撃できたのでtrueにする
+                hitAnyEnemy = true;
+
+                //ヒットエフェクトが設定されている場合
+                if (hitEffectPrefab != null)
+                {
+                    //AttackPointから見て、EnemyのCollider上で最も近い位置を取得
+                    Vector3 hitPosition =
+                        hitEnemy.ClosestPoint(
+                            attackPoint.position
+                        );
+
+                    //攻撃が当たった位置にエフェクトを生成
+                    GameObject hitEffect =
+                        Instantiate(
+                            hitEffectPrefab,
+                            hitPosition,
+                            Quaternion.identity
+                        );
+
+                    //生成したエフェクトが残り続けないように削除
+                    Destroy(
+                        hitEffect,
+                        1f
+                    );
+                }
             }
+        }
+
+        //1体以上のEnemyに当たっていた場合だけヒットSEを再生
+        if (hitAnyEnemy && hitSound != null)
+        {
+            audioSource.PlayOneShot(hitSound);
         }
     }
 
