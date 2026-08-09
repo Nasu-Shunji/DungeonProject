@@ -7,6 +7,11 @@ public class DungeonClearZone : MonoBehaviour
 {
     [Header("Clear Condition")]
     [SerializeField] private int requiredItemCount = 1;
+    //クリア条件となるBoss
+    [SerializeField] private EnemyHealth bossHealth;
+
+    //Bossを倒したか
+    private bool isBossDefeated;
 
     [Header("UI")]
     [SerializeField] private GameObject clearPanel;
@@ -32,6 +37,31 @@ public class DungeonClearZone : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (bossHealth != null)
+        {
+            //Bossが死亡したらHandleBossDiedを実行するよう登録
+            bossHealth.Died += HandleBossDied;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (bossHealth != null)
+        {
+            bossHealth.Died -= HandleBossDied;
+        }
+    }
+
+    private void HandleBossDied()
+    {
+        //Boss撃破済みにする
+        isBossDefeated = true;
+
+        Debug.Log("Boss defeated. Clear condition updated.");
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isCleared)
@@ -41,6 +71,16 @@ public class DungeonClearZone : MonoBehaviour
 
         if (!other.CompareTag("Player"))
         {
+            return;
+        }
+
+        //Bossをまだ倒していない場合はクリアできない
+        if (!isBossDefeated)
+        {
+            Debug.Log(
+                "Boss has not been defeated."
+            );
+
             return;
         }
 

@@ -31,6 +31,9 @@ public class EnemyAttack : MonoBehaviour
     //Playerの足元ではなく、少し上を狙うための高さ
     [SerializeField] private float targetHeight = 1f;
 
+    //発射する弾の速度
+    [SerializeField] private float projectileSpeed = 8f;
+
     private float attackTimer;
 
     public float AttackDistance => attackDistance;
@@ -125,6 +128,25 @@ public class EnemyAttack : MonoBehaviour
             projectile.SetDamage(
                 attackDamage
             );
+
+            //このEnemyに設定された速度を弾へ渡す
+            projectile.SetSpeed(
+                projectileSpeed
+            );
         }
+    }
+
+    //攻撃間隔を外部から変更する
+    public void SetAttackInterval(float newInterval)
+    {
+        attackInterval =
+            Mathf.Max(0.1f, newInterval);
+    }
+
+    //遠距離攻撃の弾速を外部から変更する
+    public void SetProjectileSpeed(float newSpeed)
+    {
+        projectileSpeed =
+            Mathf.Max(0f, newSpeed);
     }
 }

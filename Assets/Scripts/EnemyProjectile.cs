@@ -33,6 +33,12 @@ public class EnemyProjectile : MonoBehaviour
         damage = newDamage;
     }
 
+    //弾を生成したEnemy側から速度を設定する
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         //RoomEntranceTriggerなどのTriggerには反応しない
