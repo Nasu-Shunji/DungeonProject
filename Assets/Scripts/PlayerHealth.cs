@@ -29,16 +29,28 @@ public class PlayerHealth : MonoBehaviour
     //外部から最大HPを確認するためのプロパティ
     public int MaxHealth => maxHealth;
 
+    private PlayerMovement playerMovement;
+
     private void Awake()
     {
         //ゲーム開始時は最大HPにする
         currentHealth = maxHealth;
+
+        //同じPlayerについているPlayerMovementを取得
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     public void TakeDamage(int damage)
     {
         //0以下のダメージ、または死亡済みなら処理しない
         if (damage <= 0 || isDead)
+        {
+            return;
+        }
+
+        //ダッシュ中は攻撃を受けてもダメージを与えない
+        if (playerMovement != null
+            && playerMovement.IsDashing)
         {
             return;
         }
