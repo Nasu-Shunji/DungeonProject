@@ -11,6 +11,9 @@ public class ChestInteraction : MonoBehaviour
     [SerializeField] private float rotationSpeed = 180f;
     [SerializeField] private int rewardAmount = 1;
 
+    //宝箱の報酬として上昇する攻撃力
+    [SerializeField] private int attackIncrease = 10;
+
     [Header("UI")]
     [SerializeField] private TMP_Text interactionPrompt;
 
@@ -19,6 +22,9 @@ public class ChestInteraction : MonoBehaviour
     private bool hasReward = true;
 
     private PlayerInventory nearbyInventory;
+
+    //近くにいるPlayerの攻撃処理
+    private PlayerAttack nearbyPlayerAttack;
 
     private Quaternion closedRotation;
     private Quaternion openRotation;
@@ -81,7 +87,14 @@ public class ChestInteraction : MonoBehaviour
                 // 2回目のEキー：アイテムを取得
                 hasReward = false;
 
+                //クリア条件などに使用するItemCountを増やす
                 nearbyInventory.AddItem(rewardAmount);
+
+                //Playerの攻撃力を強化
+                if (nearbyPlayerAttack != null)
+                {
+                    nearbyPlayerAttack.IncreaseAttackDamage(attackIncrease);
+                }
 
                  if (itemPickupSound != null)
                 {
@@ -120,10 +133,22 @@ public class ChestInteraction : MonoBehaviour
         nearbyInventory =
             other.GetComponentInParent<PlayerInventory>();
 
+        //Playerの攻撃処理も取得
+        nearbyPlayerAttack =
+            other.GetComponentInParent<PlayerAttack>();
+
         if (nearbyInventory == null)
         {
             Debug.LogError(
                 "PlayerInventoryがPlayerに付いていません。",
+                other
+            );
+        }
+
+        if (nearbyPlayerAttack == null)
+        {
+            Debug.LogError(
+                "PlayerAttackがPlayerに付いていません。",
                 other
             );
         }
@@ -144,6 +169,7 @@ public class ChestInteraction : MonoBehaviour
 
         isPlayerNearby = false;
         nearbyInventory = null;
+        nearbyPlayerAttack = null;
 
         if (interactionPrompt != null)
         {

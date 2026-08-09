@@ -44,6 +44,6 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateItemCount(int count)
     {
-        itemCountText.text = $"Items: {count}";
+        itemCountText.text = $"Treasure: {count} / 1";
     }
 }

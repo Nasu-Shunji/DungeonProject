@@ -165,4 +165,17 @@ public class DungeonClearZone : MonoBehaviour
             SceneManager.GetActiveScene().name
         );
     }
+
+    public void ReturnToTitle()
+    {
+        //Scene切り替え前に時間を通常へ戻す
+        Time.timeScale = 1f;
+
+        //Title画面ではマウスを操作するので、
+        //カーソルのロックを解除して表示する
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene("Title");
+    }
 }

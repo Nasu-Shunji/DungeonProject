@@ -279,6 +279,22 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    //外部のアイテムなどからPlayerの攻撃力を上げる
+    public void IncreaseAttackDamage(int amount)
+    {
+        //0以下の値では攻撃力を変更しない
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        attackDamage += amount;
+
+        Debug.Log(
+            $"Attack Damage increased by {amount}. Current Damage: {attackDamage}"
+        );
+    }
+
     private void OnDrawGizmosSelected()
     {
         //AttackPointが設定されていなければ表示しない
